@@ -46,6 +46,14 @@
 	/**
 	 * Note: Use secrets to store sensitive data.
 	 * https://developers.cloudflare.com/workers/configuration/secrets/
+	 * 
+	 * Required secrets:
+	 * - RAPIDAPI_KEY: Your RapidAPI key for LinkedIn data
+	 * - ANTHROPIC_API_KEY: Your Anthropic API key for Claude integration
+	 * 
+	 * Set them using:
+	 * wrangler secret put RAPIDAPI_KEY
+	 * wrangler secret put ANTHROPIC_API_KEY
 	 */
 
 	/**
