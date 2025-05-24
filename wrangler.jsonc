@@ -17,7 +17,14 @@
 	},
 	"observability": {
 		"enabled": true
-	}
+	},
+	"kv_namespaces": [
+    {
+      "binding": "LINKEDIN_PROFILES_KV",
+      "id": "4c97bd831b694156b7eff9204f103023",
+      "preview_id": "4c97bd831b694156b7eff9204f103023" 
+    }
+  ],
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement

@@ -1,31 +1,125 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Hello, World!</title>
-	</head>
-	<body>
-		<h1 id="heading"></h1>
-		<button id="button" type="button">Fetch a random UUID</button>
-		<output id="random" for="button"></output>
-		<script>
-			fetch('/message')
-				.then((resp) => resp.text())
-				.then((text) => {
-					const h1 = document.getElementById('heading');
-					h1.textContent = text;
-				});
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn Profile API</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>LinkedIn Profile Fetcher</h1>
+    <p>API endpoint: <code id="api-base">Loading...</code></p>
+    
+    <div class="form-container">
+        <div class="form-section">
+            <h3>Fetch from LinkedIn API</h3>
+            <div class="form-group">
+                <label for="linkedinUrl">LinkedIn URL:</label>
+                <input type="text" id="linkedinUrl" value="https://linkedin.com/in/example" />
+                <button onclick="callApi()">Fetch Profile</button>
+            </div>
+        </div>
 
-			const button = document.getElementById("button");
-			button.addEventListener("click", () => {
-				fetch('/random')
-					.then((resp) => resp.text())
-					.then((text) => {
-						const random = document.getElementById('random');
-						random.textContent = text;
-					});
-			});
-		</script>
-	</body>
+        <div class="form-section">
+            <h3>Fetch from Cache (KV Store)</h3>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" placeholder="e.g. johndoe" />
+                <button onclick="fetchFromCache()">Get Cached Profile</button>
+            </div>
+        </div>
+    </div>
+    
+    <h2>Response:</h2>
+    <pre id="response">...</pre>
+    
+    <script>
+        // Simple script to call the API
+        document.getElementById('api-base').textContent = window.location.origin;
+        
+        function callApi() {
+            const output = document.getElementById('response');
+            const url = document.getElementById('linkedinUrl').value;
+            
+            output.textContent = 'Loading...';
+            
+            const apiUrl = window.location.origin + '/api/linkedin-profile?linkedinUrl=' + encodeURIComponent(url);
+            fetchData(apiUrl, output);
+        }
+
+        function fetchFromCache() {
+            const output = document.getElementById('response');
+            const username = document.getElementById('username').value;
+            
+            if (!username) {
+                output.textContent = 'Error: Please enter a username';
+                return;
+            }
+            
+            output.textContent = 'Loading from cache...';
+            
+            const apiUrl = window.location.origin + '/api/cached-profile?username=' + encodeURIComponent(username);
+            fetchData(apiUrl, output);
+        }
+
+        function fetchData(apiUrl, output) {
+            console.log('Calling API:', apiUrl);
+            
+            fetch(apiUrl)
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Data received:', data);
+                    output.textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    output.textContent = 'Error: ' + error.message;
+                });
+        }
+    </script>
+
+    <style>
+        .form-container {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .form-section {
+            flex: 1;
+            padding: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        input {
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 0.5rem 1rem;
+            background-color: #0077b5;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #005582;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</body>
 </html>
