@@ -12,11 +12,29 @@
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.8.19",
 		"@types/node": "^22.15.21",
+		"autoprefixer": "^10.4.21",
+		"postcss": "^8.5.3",
 		"typescript": "^5.5.2",
 		"vitest": "~3.0.7",
 		"wrangler": "^4.16.1"
 	},
 	"dependencies": {
 		"hono": "^4.7.10"
-	}
+	},
+	"main": "postcss.config.js",
+	"directories": {
+		"test": "test"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Daniishkhan/linkedin-scraper.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/Daniishkhan/linkedin-scraper/issues"
+	},
+	"homepage": "https://github.com/Daniishkhan/linkedin-scraper#readme",
+	"description": ""
 }

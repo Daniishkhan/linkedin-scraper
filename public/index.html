@@ -1,50 +1,199 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinkedIn Profile API</title>
-    <link rel="stylesheet" href="style.css">
+    <title>LinkedIn Profile Fetcher</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        @keyframes fade-in {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes scale-in {
+            0% {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .animate-fade-in {
+            animation: fade-in 0.6s ease-out forwards;
+        }
+        
+        .animate-scale-in {
+            animation: scale-in 0.6s ease-out forwards;
+        }
+        
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 2px solid white;
+            animation: spin 1s linear infinite;
+        }
+    </style>
 </head>
-<body>
-    <h1>LinkedIn Profile Fetcher</h1>
-    <p>API endpoint: <code id="api-base">Loading...</code></p>
-    
-    <div class="form-container">
-        <div class="form-section">
-            <h3>Fetch from LinkedIn API</h3>
-            <div class="form-group">
-                <label for="linkedinUrl">LinkedIn URL:</label>
-                <input type="text" id="linkedinUrl" value="https://linkedin.com/in/example" />
-                <button onclick="callApi()">Fetch Profile</button>
+<body class="min-h-screen bg-gradient-to-br from-blue-500 via-purple-600 to-purple-700">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <div class="text-center mb-12 animate-fade-in">
+            <h1 class="text-5xl font-bold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent mb-4">
+                LinkedIn Profile Fetcher
+            </h1>
+            <p class="text-xl text-blue-100 mb-6 font-light">
+                Extract LinkedIn profile data with our powerful API
+            </p>
+            <div class="inline-flex items-center bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 border border-white/20">
+                <span class="text-blue-100 mr-2">API endpoint:</span>
+                <code class="bg-blue-900/30 text-blue-200 px-3 py-1 rounded-lg font-mono text-sm" id="api-base">Loading...</code>
             </div>
         </div>
 
-        <div class="form-section">
-            <h3>Fetch from Cache (KV Store)</h3>
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" placeholder="e.g. johndoe" />
-                <button onclick="fetchFromCache()">Get Cached Profile</button>
+        <!-- Form Grid -->
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+            <!-- LinkedIn API Section -->
+            <div class="bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-white/20 hover:shadow-3xl transition-all duration-300 hover:-translate-y-1 animate-scale-in">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-gray-800">Fetch from LinkedIn API</h3>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="linkedinUrl" class="block text-sm font-medium text-gray-700 mb-2">LinkedIn URL</label>
+                        <input 
+                            type="text" 
+                            id="linkedinUrl" 
+                            value="https://linkedin.com/in/example" 
+                            placeholder="https://linkedin.com/in/example"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-gray-50 hover:bg-white focus:bg-white"
+                        />
+                    </div>
+                    <button 
+                        onclick="callApi()" 
+                        class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium py-3 px-6 rounded-xl hover:from-blue-700 hover:to-blue-800 transform hover:-translate-y-0.5 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center relative"
+                    >
+                        <span class="btn-text transition-opacity duration-300">Fetch Profile</span>
+                        <div class="spinner absolute" id="spinner1"></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cache Section -->
+            <div class="bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-white/20 hover:shadow-3xl transition-all duration-300 hover:-translate-y-1 animate-scale-in" style="animation-delay: 0.1s">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-600 to-indigo-700 rounded-xl flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-gray-800">Fetch from Cache</h3>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            placeholder="e.g. johndoe"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-200 bg-gray-50 hover:bg-white focus:bg-white"
+                        />
+                    </div>
+                    <button 
+                        onclick="fetchFromCache()" 
+                        class="w-full bg-gradient-to-r from-purple-600 to-indigo-700 text-white font-medium py-3 px-6 rounded-xl hover:from-purple-700 hover:to-indigo-800 transform hover:-translate-y-0.5 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center relative"
+                    >
+                        <span class="btn-text transition-opacity duration-300">Get Cached Profile</span>
+                        <div class="spinner absolute" id="spinner2"></div>
+                    </button>
+                </div>
             </div>
         </div>
+
+        <!-- Response Section -->
+        <div class="bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-white/20 mb-8 animate-fade-in" style="animation-delay: 0.2s">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-gradient-to-br from-green-600 to-emerald-700 rounded-xl flex items-center justify-center mr-4">
+                    <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-semibold text-gray-800">API Response</h2>
+            </div>
+            <div class="bg-gray-900 rounded-xl p-6 overflow-x-auto">
+                <pre id="response" class="text-green-400 font-mono text-sm leading-relaxed whitespace-pre-wrap">...</pre>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-blue-100 animate-fade-in" style="animation-delay: 0.3s">
+            <p class="text-sm opacity-80">Built with modern web technologies • Powered by LinkedIn API</p>
+        </div>
     </div>
-    
-    <h2>Response:</h2>
-    <pre id="response">...</pre>
-    
+
     <script>
         // Simple script to call the API
         document.getElementById('api-base').textContent = window.location.origin;
+        
+        function showSpinner(spinnerId) {
+            const spinner = document.getElementById(spinnerId);
+            const button = spinner.parentElement;
+            const text = button.querySelector('.btn-text');
+            
+            text.style.opacity = '0';
+            spinner.style.display = 'block';
+            button.disabled = true;
+        }
+        
+        function hideSpinner(spinnerId) {
+            const spinner = document.getElementById(spinnerId);
+            const button = spinner.parentElement;
+            const text = button.querySelector('.btn-text');
+            
+            spinner.style.display = 'none';
+            text.style.opacity = '1';
+            button.disabled = false;
+        }
         
         function callApi() {
             const output = document.getElementById('response');
             const url = document.getElementById('linkedinUrl').value;
             
+            showSpinner('spinner1');
             output.textContent = 'Loading...';
             
             const apiUrl = window.location.origin + '/api/linkedin-profile?linkedinUrl=' + encodeURIComponent(url);
-            fetchData(apiUrl, output);
+            fetchData(apiUrl, output, 'spinner1');
         }
 
         function fetchFromCache() {
@@ -56,13 +205,14 @@
                 return;
             }
             
+            showSpinner('spinner2');
             output.textContent = 'Loading from cache...';
             
             const apiUrl = window.location.origin + '/api/cached-profile?username=' + encodeURIComponent(username);
-            fetchData(apiUrl, output);
+            fetchData(apiUrl, output, 'spinner2');
         }
 
-        function fetchData(apiUrl, output) {
+        function fetchData(apiUrl, output, spinnerId) {
             console.log('Calling API:', apiUrl);
             
             fetch(apiUrl)
@@ -77,49 +227,11 @@
                 .catch(error => {
                     console.error('Error:', error);
                     output.textContent = 'Error: ' + error.message;
+                })
+                .finally(() => {
+                    hideSpinner(spinnerId);
                 });
         }
     </script>
-
-    <style>
-        .form-container {
-            display: flex;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-        .form-section {
-            flex: 1;
-            padding: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        input {
-            padding: 0.5rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            padding: 0.5rem 1rem;
-            background-color: #0077b5;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #005582;
-        }
-        pre {
-            background-color: #f5f5f5;
-            padding: 1rem;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
-    </style>
 </body>
 </html>
