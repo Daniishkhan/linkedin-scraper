@@ -66,7 +66,7 @@ app.get('/api/linkedin-profile', async (c) => {
       if (!rapidApiResponse.ok) {
         const errorText = await rapidApiResponse.text();
         console.error(`[Hono] RapidAPI Error (${rapidApiResponse.status}): ${errorText}`);
-        return c.json({ error: 'Failed to fetch data from LinkedIn API.', status: rapidApiResponse.status, details: errorText }, rapidApiResponse.status);
+        return c.json({ error: 'Failed to fetch data from LinkedIn API.', status: rapidApiResponse.status, details: errorText }, 400);
       }
   
       const profileData = await rapidApiResponse.json(); // Assuming RapidAPI sends JSON
@@ -95,7 +95,7 @@ app.get('/api/linkedin-profile', async (c) => {
       return c.json({ error: 'An error occurred while contacting the external API.', details: errorMessage }, 500);
     }
   });
-  
+
 // Root route (likely served by static index.html first)
 app.get('/api/cached-profile', async (c) => {
     const username = c.req.query('username'); // This endpoint will expect a 'username' query param
