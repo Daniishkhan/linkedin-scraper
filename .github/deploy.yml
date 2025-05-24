@@ -1,0 +1,32 @@
+name: Deploy to Cloudflare Workers
+
+on:
+  push:
+    branches:
+      - main # Or 'master' if that's your default branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy Worker
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4 # Uses the latest version of the checkout action
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Specify your desired Node.js version (LTS versions are good)
+
+      - name: Install Dependencies
+        run: npm ci # 'ci' is generally preferred in CI for cleaner installs using package-lock.json
+
+      - name: Publish to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3 # Uses the official Wrangler GitHub Action
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          # The wrangler-action will run `wrangler deploy` by default.
+          # If your wrangler.jsonc has a specific environment for production, you might add:
+          # command: "deploy --env production" 
+          # For this project, default deploy should be fine.
